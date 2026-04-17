@@ -28,7 +28,29 @@ if (-not $nvmExists) {
     }
 
     Write-Host '🛠 nvm (Node Version Manager) をインストールします... ' -ForegroundColor Yellow
-    winget install -e --id CoreyButler.nvm-for-windows --silent --accept-source-agreements --accept-package-agreements
+    
+    # winget自体の存在確認
+    $wingetExists = Get-Command winget -ErrorAction SilentlyContinue
+    if ($wingetExists) {
+        Write-Host "wingetを使って自動インストールを試みます... " -ForegroundColor Gray
+        winget install -e --id CoreyButler.nvm-for-windows --accept-source-agreements --accept-package-agreements
+    }
+
+    # インストールに失敗、またはwingetがない場合
+    $nvmVerify = Get-Command nvm -ErrorAction SilentlyContinue
+    if (-not $nvmVerify) {
+        Write-Host ""
+        Write-Host "❌ 自動インストールがうまく進みませんでした。 " -ForegroundColor Red
+        Write-Host "お手数ですが、以下の手順で手動インストールをお願いします（1分で終わります）。 " -ForegroundColor White
+        Write-Host "1. 公式サイトを開く: https://github.com/coreybutler/nvm-windows/releases " -ForegroundColor Cyan
+        Write-Host "2. nvm-setup.exe をダウンロードして実行。 " -ForegroundColor Cyan
+        Write-Host "3. 全て「次へ」で進めて完了！ " -ForegroundColor Cyan
+        Write-Host ""
+        Write-Host "インストール後、PCを「再起動」してからもう一度この deploy.bat を実行してください。" -ForegroundColor Yellow
+        Read-Host "Enterキーを押すと閉じます "
+        exit
+    }
+
     Write-Host '✅ nvmのインストールが完了しました！ ' -ForegroundColor Green
     Write-Host '⚠️ 重要: 設定を反映させるため、PCを一度「再起動」してからもう一度実行してください。 ' -ForegroundColor Yellow
     Read-Host 'Enterキーを押すと閉じます '
