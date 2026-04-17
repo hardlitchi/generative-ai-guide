@@ -1,14 +1,15 @@
 @echo off
+chcp 65001 >nul
 setlocal
 echo 🚀 [1/4] 道具（Node.js）の準備を確認しています...
 
-:: Node.jsがあるかチェック
+rem Node.jsがあるかチェック
 node -v >nul 2>&1
 if %errorlevel% neq 0 (
     echo 🛠 Node.jsが見つかりません。自動でインストールを開始します...
     echo ※許可を求める画面が出たら「はい」を押してください。
     
-    :: wingetを使ってNode.jsをインストール
+    rem wingetを使ってNode.jsをインストール
     winget install -e --id OpenJS.NodeJS.LTS --silent --accept-source-agreements --accept-package-agreements
     
     if %errorlevel% neq 0 (
@@ -23,7 +24,7 @@ if %errorlevel% neq 0 (
 )
 
 echo 🔑 [2/4] 公開の準備（ログイン）を確認しています...
-:: Vercelにログインしているかチェック
+rem Vercelにログインしているかチェック
 call npx vercel whoami >nul 2>&1
 if %errorlevel% neq 0 (
     echo 🔓 Vercelにログインしていません。
