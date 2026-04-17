@@ -1,6 +1,10 @@
 ﻿# 文字コードをUTF-8に設定
 $OutputEncoding = [System.Text.Encoding]::UTF8
 
+# 1. 実行されているスクリプトの場所へ移動
+Set-Location $PSScriptRoot
+Write-Host "📍 作業場所を確認しました: $PSScriptRoot" -ForegroundColor Gray
+
 Write-Host '🚀 [1/4] 道具 (Node.js) の準備を確認しています... ' -ForegroundColor Cyan
 
 # Node.jsがあるかチェック
@@ -13,11 +17,20 @@ if (-not $nodeExists) {
     exit
 }
 
-# バージョンチェック (v20.10以上を推奨)
+# 2. Node.jsのバージョンチェック (v20.10以上が必須)
 $nodeVersion = node -v
-if ($nodeVersion -match "v20\.[0-9]\.") {
-    Write-Host "⚠️ 注意: Node.js のバージョンが少し古いです ($nodeVersion) 。 " -ForegroundColor Yellow
-    Write-Host "Vercelのデプロイでエラーが出る場合は、最新のLTS版をインストールしてください。 " -ForegroundColor Yellow
+$vNumber = [version]($nodeVersion -replace 'v', '')
+if ($vNumber -lt [version]"20.10.0") {
+    Write-Host "⚠️ Node.js が古すぎます ($nodeVersion) 。このままではエラーになります。 " -ForegroundColor Red
+    Write-Host "最新の安定版(LTS)にアップデートすることを強く推奨します。 " -ForegroundColor Yellow
+    $choice = Read-Host "今すぐアップデートしますか？ (Y/N)"
+    if ($choice -eq 'Y' -or $choice -eq 'y') {
+        Write-Host "🛠 アップデート中... 数分かかる場合があります。 " -ForegroundColor Yellow
+        winget install -e --id OpenJS.NodeJS.LTS --silent --accept-source-agreements --accept-package-agreements
+        Write-Host "✅ アップデート完了！一度この画面を閉じ、もう一度実行してください。 " -ForegroundColor Green
+        Read-Host "Enterキーを押すと閉じます "
+        exit
+    }
 }
 
 Write-Host '🔑 [2/4] 公開の準備 (ログイン) を確認しています... ' -ForegroundColor Cyan
@@ -33,14 +46,7 @@ npm install --quiet
 npm run build
 
 Write-Host '🌐 [4/4] 世界中に公開しています... ' -ForegroundColor Cyan
-# npxでエラーが出る場合はローカルにインストールして実行を試みる
-try {
-    npx --yes vercel --prod --yes
-} catch {
-    Write-Host "🛠 Vercelの実行でエラーが出たため、修復を試みます... " -ForegroundColor Yellow
-    npm install --save-dev vercel --quiet
-    npx vercel --prod --yes
-}
+npx --yes vercel --prod --yes
 
 if ($LASTEXITCODE -eq 0) {
     Write-Host ""
@@ -48,7 +54,6 @@ if ($LASTEXITCODE -eq 0) {
     Write-Host "表示された URL を Ctrlキーを押しながらクリック して確認してください。 "
 } else {
     Write-Host "❌ デプロイ中にエラーが発生しました。 " -ForegroundColor Red
-    Write-Host "※Node.jsのバージョンを最新(v20.18以上)にすると解決する場合があります。 " -ForegroundColor Yellow
 }
 
 Read-Host 'Enterキーを押すと閉じます '
