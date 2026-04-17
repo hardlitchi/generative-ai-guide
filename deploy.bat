@@ -1,26 +1,27 @@
 @echo off
+rem ▼ UTF-8モードへ切り替えるためのおまじない
 chcp 65001 >nul
-setlocal
 
-echo 🚀 [1/4] Node.js の準備を確認しています...
+setlocal
+echo 🚀 [1/4] Node.js check...
 
 rem Node.jsがあるかチェック
 node -v >nul 2>&1
 if %errorlevel% neq 0 goto :INSTALL_NODE
 
 :CHECK_LOGIN
-echo 🔑 [2/4] ログイン状態を確認しています...
+echo 🔑 [2/4] Login check...
 rem Vercelにログインしているかチェック
 call npx vercel whoami >nul 2>&1
 if %errorlevel% neq 0 goto :LOGIN_VERCEL
 
 :BUILD
-echo 📦 [3/4] 資料をWebサイトの形に変換しています...
+echo 📦 [3/4] Building...
 call npm install --quiet
 call npm run build
 
 :DEPLOY
-echo 🌐 [4/4] 世界中に公開しています...
+echo 🌐 [4/4] Deploying...
 call npx vercel --prod --yes
 if %errorlevel% neq 0 goto :DEPLOY_ERROR
 
@@ -33,12 +34,14 @@ exit /b
 echo 🛠 Node.js が見つかりません。自動でインストールを開始します...
 echo ※許可を求める画面が出たら「はい」を押してください。
 winget install -e --id OpenJS.NodeJS.LTS --silent --accept-source-agreements --accept-package-agreements
-if %errorlevel% neq 0 (
-    echo ❌ 自動インストールに失敗しました。https://nodejs.org/ から入れてください。
-    pause
-    exit /b
-)
+if %errorlevel% neq 0 goto :INSTALL_FAILED
 echo ✅ インストール完了！この画面を閉じ、もう一度実行してください。
+pause
+exit /b
+
+:INSTALL_FAILED
+echo ❌ 自動インストールに失敗しました。
+echo https://nodejs.org/ から「LTS版」を入れてください。
 pause
 exit /b
 
@@ -46,6 +49,7 @@ exit /b
 echo 🔓 Vercelにログインしていません。
 echo 今からブラウザが開くので、ログインを完了させてください。
 call npx vercel login
+if %errorlevel% neq 0 goto :DEPLOY_ERROR
 goto :BUILD
 
 :DEPLOY_ERROR
