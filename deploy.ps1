@@ -33,14 +33,15 @@ if (-not $nvmExists) {
     $wingetExists = Get-Command winget -ErrorAction SilentlyContinue
     if ($wingetExists) {
         Write-Host "wingetを使って自動インストールを試みます... " -ForegroundColor Gray
+        # --silent を外して、ユーザーが状況を確認できるようにします
         winget install -e --id CoreyButler.nvm-for-windows --accept-source-agreements --accept-package-agreements
     }
 
-    # インストールに失敗、またはwingetがない場合
+    # インストール後に再度確認
     $nvmVerify = Get-Command nvm -ErrorAction SilentlyContinue
     if (-not $nvmVerify) {
         Write-Host ""
-        Write-Host "❌ 自動インストールがうまく進みませんでした。 " -ForegroundColor Red
+        Write-Host "❌ 自動インストールが完了していないようです。 " -ForegroundColor Red
         Write-Host "お手数ですが、以下の手順で手動インストールをお願いします（1分で終わります）。 " -ForegroundColor White
         Write-Host "1. 公式サイトを開く: https://github.com/coreybutler/nvm-windows/releases " -ForegroundColor Cyan
         Write-Host "2. nvm-setup.exe をダウンロードして実行。 " -ForegroundColor Cyan
