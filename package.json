@@ -9,6 +9,7 @@
   },
   "dependencies": {},
   "devDependencies": {
-    "@marp-team/marp-cli": "latest"
+    "@marp-team/marp-cli": "latest",
+    "vercel": "latest"
   }
 }
