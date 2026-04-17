@@ -8,15 +8,26 @@ export NVM_DIR="$HOME/.nvm"
 
 if ! command -v nvm &> /dev/null
 then
-    echo "🛠 nvm が見つかりません。Node.jsを直接確認します..."
-    if ! command -v node &> /dev/null; then
-        echo "❌ nvmもNode.jsも見つかりませんでした。"
-        echo "エンジニアの標準ツールである 'nvm' のインストールをおすすめします。"
+    if command -v node &> /dev/null; then
+        echo "⚠️ Node.jsが直接インストールされています。"
+        echo "プロの環境（nvm）に切り替えるために、今あるNode.jsを削除することをおすすめします。"
+        read -p "現在のNode.jsを削除して、nvmに切り替えますか？ (y/N): " choice
+        case "$choice" in 
+          [yY][eE][sS]|[yY]) 
+            echo "🛠 手動で Node.js をアンインストールしてから、nvm をインストールしてください。"
+            echo "👉 https://github.com/nvm-sh/nvm#installing-and-updating"
+            exit 1
+            ;;
+          *)
+            echo "🆗 そのまま続行します。"
+            ;;
+        esac
+    else
+        echo "🛠 nvmが見つかりません。インストールをおすすめします。"
         echo "👉 https://github.com/nvm-sh/nvm#installing-and-updating"
         exit 1
     fi
 else
-    # nvmがある場合は最新LTSを確実に使う
     echo "📦 nvm を使って最新の安定版 Node.js を準備しています..."
     nvm install --lts --quiet
     nvm use --lts --quiet
