@@ -1,0 +1,14 @@
+{
+  "name": "generative-ai-guide",
+  "version": "1.0.0",
+  "description": "文系新卒向けWebサービス自作ガイド",
+  "scripts": {
+    "build:slides": "npx @marp-team/marp-cli@latest slides/ --html && npx @marp-team/marp-cli@latest docs/ --html",
+    "build": "npm run build:slides && mkdir -p public && cp index.html public/ && cp -r slides public/ && cp -r sample-code public/ && cp -r docs public/",
+    "preview": "npx @marp-team/marp-cli@latest slides/*.md -w --html"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@marp-team/marp-cli": "latest"
+  }
+}

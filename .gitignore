@@ -1,0 +1,15 @@
+# Node.js
+node_modules/
+npm-debug.log*
+
+# Build outputs (Marp)
+slides/*.html
+docs/*.html
+public/
+
+# Vercel
+.vercel/
+
+# OS files
+.DS_Store
+Thumbs.db

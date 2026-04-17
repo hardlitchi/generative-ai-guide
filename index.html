@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MAKE WITH AI：AIと作る自分だけのWeb自作ガイド</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Archivo+Black&family=Noto+Serif+JP:wght@900&display=swap');
+
+        :root {
+            --bg: #FDFCF0;
+            --main: #FFB366;
+            --main-dark: #E67E22;
+            --black: #1A1A1A;
+            --white: #FFFFFF;
+            --border: 3px solid var(--black);
+            --shadow: 6px 6px 0px var(--black);
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            background-color: var(--bg);
+            color: var(--black);
+            font-family: sans-serif;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+
+        .hero {
+            padding: 100px 20px;
+            text-align: center;
+            border-bottom: var(--border);
+            background-color: var(--main);
+            color: var(--black);
+        }
+
+        h1 {
+            font-family: 'Archivo Black', sans-serif;
+            font-size: clamp(2.5rem, 8vw, 5rem);
+            line-height: 1;
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: -1px;
+        }
+
+        .hero-sub {
+            font-family: 'Noto Serif JP', serif;
+            font-size: 1.5rem;
+            margin-top: 20px;
+            background: var(--white);
+            display: inline-block;
+            padding: 10px 25px;
+            border: var(--border);
+            box-shadow: 4px 4px 0px var(--black);
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 60px 20px;
+        }
+
+        /* 🆕 価値提案セクション：なぜこのガイドを読むのか */
+        .value-prop {
+            background: var(--white);
+            border: var(--border);
+            padding: 40px;
+            margin-bottom: 80px;
+            box-shadow: var(--shadow);
+            transform: rotate(0.5deg);
+        }
+
+        .value-prop h2 {
+            font-family: 'Archivo Black', sans-serif;
+            font-size: 2rem;
+            margin-top: 0;
+            background: var(--black);
+            color: var(--white);
+            display: inline-block;
+            padding: 5px 15px;
+        }
+
+        .value-prop p {
+            font-size: 1.2rem;
+            font-weight: 600;
+            line-height: 1.8;
+            margin: 20px 0;
+        }
+
+        .check-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .check-list li {
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .check-list li::before {
+            content: "✔";
+            color: var(--main-dark);
+            font-weight: 900;
+            font-size: 1.4rem;
+        }
+
+        /* ロードマップ */
+        .roadmap {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            position: relative;
+        }
+
+        .roadmap::before {
+            content: "";
+            position: absolute;
+            left: 40px;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            border-left: 4px dashed var(--black);
+            z-index: 0;
+        }
+
+        .step-wrapper {
+            position: relative;
+            z-index: 1;
+            padding-left: 80px;
+            margin-bottom: 40px;
+        }
+
+        .card {
+            background: var(--white);
+            border: var(--border);
+            padding: 25px;
+            box-shadow: var(--shadow);
+            transition: all 0.1s ease;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+
+        .card:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 10px 10px 0px var(--black);
+        }
+
+        .step-num {
+            position: absolute;
+            left: -80px;
+            top: 0;
+            width: 50px;
+            height: 50px;
+            background: var(--black);
+            color: var(--white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Archivo Black', sans-serif;
+            font-size: 1.5rem;
+            border: var(--border);
+        }
+
+        .step-status {
+            font-weight: 900;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            color: var(--main-dark);
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        .card h2 {
+            font-family: 'Noto Serif JP', serif;
+            font-size: 2rem;
+            margin: 5px 0 15px 0;
+        }
+
+        .grid-footer {
+            margin-top: 60px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+            padding-top: 40px;
+            border-top: var(--border);
+        }
+
+        .footer-link {
+            text-align: center;
+            padding: 12px;
+            border: var(--border);
+            text-decoration: none;
+            color: var(--black);
+            font-weight: bold;
+            background: var(--white);
+            box-shadow: 3px 3px 0px var(--black);
+            font-size: 0.9rem;
+        }
+
+        .footer-link:hover { background: var(--main); }
+
+        marquee {
+            border-top: var(--border);
+            border-bottom: var(--border);
+            padding: 8px 0;
+            font-weight: bold;
+            font-family: 'Archivo Black', sans-serif;
+            background: var(--white);
+        }
+
+        @media (max-width: 600px) {
+            .roadmap::before { left: 20px; }
+            .step-wrapper { padding-left: 50px; }
+            .step-num { left: -50px; width: 35px; height: 35px; font-size: 1.1rem; }
+            .value-prop { padding: 25px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="hero">
+        <h1>MAKE IT<br>YOURS</h1>
+        <div class="hero-sub">AIと作る、自分だけのWebサービス。</div>
+    </div>
+
+    <marquee scrollamount="8">
+        FOR HUMANITIES GRADS // NO CODING SKILLS // JUST YOUR JAPANESE // FROM CONSUMER TO CREATOR // 0 YEN TO DEPLOY //
+    </marquee>
+
+    <div class="container">
+        
+        <!-- 🆕 ここに「読む価値」を明示 -->
+        <section class="value-prop">
+            <h2>WHY THIS GUIDE?</h2>
+            <p>このページは、ITに苦手意識がある「文系新卒」のあなたが、生成AIという魔法を使って「作りたいものを形にする」ための入り口です。</p>
+            <ul class="check-list">
+                <li>専門用語や英語は、AIが全部翻訳してくれます。</li>
+                <li>「見るだけ」の毎日から、自分のアイデアを公開する側へ。</li>
+                <li>0円で、3分で、自分の名前入りのURLが手に入ります。</li>
+            </ul>
+            <p style="font-size: 1rem; color: #666; margin-top: 15px;">※ 必要なのは「お料理の注文」ができるくらいの日本語力だけ。さあ、始めましょう。</p>
+        </section>
+
+        <div class="roadmap">
+            
+            <div class="step-wrapper">
+                <div class="step-num">1</div>
+                <a href="slides/01_introduction.html" class="card">
+                    <span class="step-status">まずはここから ➔</span>
+                    <h2>🌱 夢を見る</h2>
+                    <p>プログラミングは現代の「お料理」。言葉さえあれば世界は変えられます。まずは心の準備から。</p>
+                </a>
+            </div>
+
+            <div class="step-wrapper">
+                <div class="step-num">2</div>
+                <a href="slides/00_concepts.html" class="card">
+                    <span class="step-status">中身を知る ➔</span>
+                    <h2>🧩 正体を見破る</h2>
+                    <p>Webアプリの仕組みを「本棚」や「会場」に例えて解剖。難しい専門用語を日常の言葉に翻訳します。</p>
+                </a>
+            </div>
+
+            <div class="step-wrapper">
+                <div class="step-num">3</div>
+                <a href="slides/00_quick_start.html" class="card">
+                    <span class="step-status">いざ実践！ ➔</span>
+                    <h2>✨ 魔法を体験</h2>
+                    <p>1クリックで世界公開。AIで言葉を書き換えた瞬間、あなたは「開発者」の仲間入りです。</p>
+                </a>
+            </div>
+
+        </div>
+
+        <div class="grid-footer">
+            <a href="slides/02_tools.html" class="footer-link">🛠 道具を揃える</a>
+            <a href="slides/03_ai_prompts.html" class="footer-link">💬 AIへの頼み方</a>
+            <a href="slides/04_deploy.html" class="footer-link">🌐 世界へ公開</a>
+            <a href="docs/blog-ai-dev.html" class="footer-link" style="background-color: var(--black); color: var(--white);">📝 AI開発ログ（舞台裏）</a>
+        </div>
+
+        <p style="text-align: center; margin-top: 60px; font-weight: bold; opacity: 0.4; font-size: 0.8rem;">
+            EST. 2026 / GENERATIVE AI GUIDE FOR NEW GRADS.
+        </p>
+    </div>
+
+</body>
+</html>
