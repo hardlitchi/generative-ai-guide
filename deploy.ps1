@@ -8,29 +8,38 @@ Write-Host '🚀 [1/4] 道具 (Node.js/nvm) の準備を確認しています...
 
 # nvm があるかチェック
 $nvmExists = Get-Command nvm -ErrorAction SilentlyContinue
+
 if (-not $nvmExists) {
-    Write-Host '🛠 nvm (Node Version Manager) が見つかりません。セットアップを開始します... ' -ForegroundColor Yellow
-    Write-Host 'これを入れると、Node.jsのバージョン管理がとても楽になります。 ' -ForegroundColor Gray
+    # nvmがないのにnodeがある場合 = 直接インストールされている
+    $nodeExists = Get-Command node -ErrorAction SilentlyContinue
+    if ($nodeExists) {
+        Write-Host "⚠️ Node.jsが直接インストールされているのを見つけました。" -ForegroundColor Yellow
+        Write-Host "プロの環境にするために、今あるNode.jsを一度消して、nvm（管理ツール）に切り替えることをおすすめします。" -ForegroundColor Gray
+        $cleanChoice = Read-Host "今のNode.jsを削除して、nvmに切り替えますか？ (Y/N)"
+        if ($cleanChoice -eq 'Y' -or $cleanChoice -eq 'y') {
+            Write-Host "🛠 Node.jsを削除しています... 設定画面が開いたら手動でアンインストールしてください。" -ForegroundColor Yellow
+            Start-Process ms-settings:appsfeatures
+            Write-Host "完了したらEnterキーを押してください。" -ForegroundColor White
+            Read-Host
+        } else {
+            Write-Host "🆗 そのまま続行します。不具合が出た場合はnvmへの移行を検討してください。" -ForegroundColor Gray
+            goto :START_BUILD
+        }
+    }
+
+    Write-Host '🛠 nvm (Node Version Manager) をインストールします... ' -ForegroundColor Yellow
     winget install -e --id CoreyButler.nvm-for-windows --silent --accept-source-agreements --accept-package-agreements
     Write-Host '✅ nvmのインストールが完了しました！ ' -ForegroundColor Green
-    Write-Host '⚠️ 重要: 設定を反映させるため、PCを再起動するか、一度ログアウトしてからもう一度実行してください。 ' -ForegroundColor Yellow
+    Write-Host '⚠️ 重要: 設定を反映させるため、PCを一度「再起動」してからもう一度実行してください。 ' -ForegroundColor Yellow
     Read-Host 'Enterキーを押すと閉じます '
     exit
 }
 
-# Node.js が入っているかチェック
+# Node.jsが入っていない、またはnvmがある場合のセットアップ
+:START_BUILD
 $nodeExists = Get-Command node -ErrorAction SilentlyContinue
 if (-not $nodeExists) {
-    Write-Host '📦 nvmを使って Node.js (LTS版) をインストールしています... ' -ForegroundColor Yellow
-    nvm install lts
-    nvm use lts
-}
-
-# バージョンが古い場合も nvm で更新
-$nodeVersion = node -v
-$vNumber = [version]($nodeVersion -replace 'v', '')
-if ($vNumber -lt [version]"20.10.0") {
-    Write-Host "⚠️ 現在の Node.js ($nodeVersion) は少し古いです。nvmで最新版に切り替えます。 " -ForegroundColor Yellow
+    Write-Host '📦 nvmを使って Node.js (LTS版) を準備しています... ' -ForegroundColor Yellow
     nvm install lts
     nvm use lts
 }
